@@ -1,27 +1,27 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 type MindmapContextData = {
-  mindmap: (businesslogic : BusinessLogic) => void;
+  mindmap: (businesslogic: BusinessLogic) => void;
   output: (systemOutput: string, portalOutput: string) => void;
   operationInfo: (p_operation: string) => void;
-  businesslogicInfo : (p_businesslogic: string) => void;
-  addBreadcrumb: (businesslogic : BusinessLogic) => void;
-  historyBreadcrumb: (businesslogic : BusinessLogic) => void;
+  businesslogicInfo: (p_businesslogic: string) => void;
+  addBreadcrumb: (businesslogic: BusinessLogic) => void;
+  historyBreadcrumb: (businesslogic: BusinessLogic) => void;
   clearBreadcrumb: () => void;
   ambiente: string;
   businesslogic: string;
   portalOutput: string;
   systemOutput: string;
-  operation: string, 
+  operation: string,
   isOutput: boolean,
-  isOperation: boolean, 
-  isBusinessLogic: boolean, 
+  isOperation: boolean,
+  isBusinessLogic: boolean,
   breadcrumb: BusinessLogic[];
 };
 
 type BusinessLogic = {
-  ambiente : string;
-  businesslogic : string;
+  ambiente: string;
+  businesslogic: string;
 }
 
 /**
@@ -44,21 +44,21 @@ export function MindmapProvider({ children }: MindmapContextProviderProps) {
   const [businesslogic, setBusinesslogic] = useState("");
   const [portalOutput, setPortalOutput] = useState("");
   const [systemOutput, setSystemOutput] = useState("");
-  const [operation, setOperation ] = useState("");
+  const [operation, setOperation] = useState("");
 
-  const [isOutput, setIsOutput ] = useState(false);
+  const [isOutput, setIsOutput] = useState(false);
   const [isOperation, setIsOperation] = useState(false);
   const [isBusinessLogic, setIsBusinessLogic] = useState(false);
 
   const [breadcrumb, setBreadcrumb] = useState([]);
-  
+
 
   /**
    * Função para informar o Ambiente e Businesslogic do Mindmap
    * @param ambiente 
    * @param businesslogic 
    */
-  function mindmap(businesslogic : BusinessLogic) {
+  function mindmap(businesslogic: BusinessLogic) {
     setAmbiente(businesslogic.ambiente);
     setBusinesslogic(businesslogic.businesslogic);
     setPortalOutput("");
@@ -78,14 +78,14 @@ export function MindmapProvider({ children }: MindmapContextProviderProps) {
     setIsBusinessLogic(false);
   }
 
-  function operationInfo(p_operation: string){
+  function operationInfo(p_operation: string) {
     setOperation(p_operation);
     setIsOperation(true);
     setIsOutput(false);
     setIsBusinessLogic(false);
   }
 
-  function businesslogicInfo(p_businesslogic : string){
+  function businesslogicInfo(p_businesslogic: string) {
     setIsOperation(false);
     setIsOutput(false);
     setIsBusinessLogic(true);
@@ -95,31 +95,31 @@ export function MindmapProvider({ children }: MindmapContextProviderProps) {
   /**
    * Adiciona um novo valor ao historico de navegação
    */
-  function addBreadcrumb(businesslogic : BusinessLogic){
+  function addBreadcrumb(businesslogic: BusinessLogic) {
     const result = breadcrumb.findIndex(blogic => blogic.businesslogic === businesslogic.businesslogic);
-    if(result == -1){
+    if (result == -1) {
       breadcrumb.push(businesslogic);
     }
 
   }
 
-  function historyBreadcrumb(businesslogic : BusinessLogic){
+  function historyBreadcrumb(businesslogic: BusinessLogic) {
     const result = breadcrumb.findIndex(blogic => blogic.businesslogic === businesslogic.businesslogic);
-    breadcrumb.splice(result +1, Number.MAX_VALUE);
+    breadcrumb.splice(result + 1, Number.MAX_VALUE);
   }
 
   /**
    * Limpa todo o array de navegação
    */
-  function clearBreadcrumb(){
+  function clearBreadcrumb() {
     breadcrumb.splice(0, Number.MAX_VALUE);
-}
+  }
 
   return (
     /**
      * Passa os valores de Ambiente, Businesslogic e a função para o contexto
      */
-    <MindmapContext.Provider value={{ mindmap, operationInfo,businesslogicInfo, output, ambiente, businesslogic, portalOutput, systemOutput, breadcrumb, operation, isOutput, isOperation, isBusinessLogic, addBreadcrumb, clearBreadcrumb, historyBreadcrumb }}>
+    <MindmapContext.Provider value={{ mindmap, operationInfo, businesslogicInfo, output, ambiente, businesslogic, portalOutput, systemOutput, breadcrumb, operation, isOutput, isOperation, isBusinessLogic, addBreadcrumb, clearBreadcrumb, historyBreadcrumb }}>
       {children}
     </MindmapContext.Provider>
   );

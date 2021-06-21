@@ -17,24 +17,28 @@ import initialElements from "./initial-elements";
 
 import { api } from "../../services/api";
 
-
 export function Mindmap() {
-  const { ambiente, businesslogic, output, operationInfo, businesslogicInfo ,breadcrumb, mindmap, historyBreadcrumb } =
-    useAppContext();
+  const {
+    ambiente,
+    businesslogic,
+    output,
+    operationInfo,
+    businesslogicInfo,
+    breadcrumb,
+    mindmap,
+    historyBreadcrumb,
+  } = useAppContext();
   const [systemOutput, setSystemOutput] = useState("");
   const [portalOutput, setPortalOutput] = useState("");
 
   function handleClick(element) {
     const blogic = {
-      "ambiente" : element.ambiente,
-      "businesslogic": element.businesslogic
-    }
+      ambiente: element.ambiente,
+      businesslogic: element.businesslogic,
+    };
     mindmap(blogic);
     historyBreadcrumb(blogic);
-
   }
-  
-
 
   /* Configuracao do MindMap */
 
@@ -105,46 +109,47 @@ export function Mindmap() {
   const onElementClick = (event, element) => {
     const tipoElemento = element.type;
 
-
-    if (tipoElemento == "output" && element.id.indexOf('TERM-') == -1) {
+    if (tipoElemento == "output" && element.id.indexOf("TERM-") == -1) {
       setSystemOutput(element.id.split("|")[0]);
       setPortalOutput(element.id.split("|")[1]);
       output(element.id.split("|")[0], element.id.split("|")[1]);
-    }else  if (tipoElemento == "default"){
+    } else if (tipoElemento == "default") {
       operationInfo(element.id);
-    }else if (tipoElemento == "input"){
+    } else if (tipoElemento == "input") {
       businesslogicInfo(element.id);
     }
   };
 
-  return (    
+  return (
     <div>
       <div className={styles.navigation}>
         <Breadcrumbs aria-label="breadcrumb">
-        {
-          breadcrumb.map((element) => (
-            <Link color="inherit" onClick={() => handleClick(element)} key={element}>
+          {breadcrumb.map((element) => (
+            <Link
+              color="inherit"
+              onClick={() => handleClick(element)}
+              key={element}
+            >
               {element.businesslogic}
             </Link>
-          ))
-        }
+          ))}
         </Breadcrumbs>
       </div>
-      <div className={styles.mindmap}>     
-      <ReactFlowProvider>
-        <ReactFlow
-          elements={elements}
-          onElementClick={onElementClick}
-          connectionLineType="smoothstep"
-          defaultZoom={1.5}
-        />
-        <Controls showInteractive={false} showFitView={true} showZoom={false} />
-      </ReactFlowProvider>
+      <div className={styles.mindmap}>
+        <ReactFlowProvider>
+          <ReactFlow
+            elements={elements}
+            onElementClick={onElementClick}
+            connectionLineType="smoothstep"
+            defaultZoom={1.5}
+          />
+          <Controls
+            showInteractive={false}
+            showFitView={true}
+            showZoom={false}
+          />
+        </ReactFlowProvider>
+      </div>
     </div>
-
-
-    </div>
-
-
   );
 }

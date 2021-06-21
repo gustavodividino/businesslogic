@@ -15,18 +15,18 @@ export function Businesslogic() {
     async function loadBusinesslogicInfo() {
 
       let response = await api.get(
-        "businesslogic/filter?ambiente="+ ambiente + "&businesslogic=" + businesslogic
+        "businesslogic/filter?ambiente=" + ambiente + "&businesslogic=" + businesslogic
       );
       setBusinesslogicInfo(response.data);
 
 
       response = await api.get(
-        "portal/filter/businesslogic?ambiente="+ ambiente + "&businesslogic=" + businesslogic
+        "portal/filter/businesslogic?ambiente=" + ambiente + "&businesslogic=" + businesslogic
       );
       setPortalsAssociation(response.data);
     }
     loadBusinesslogicInfo();
-  }, []);
+  }, [businesslogic]);
 
 
   return (

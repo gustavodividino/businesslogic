@@ -34,7 +34,7 @@ export function Filter(props) {
 
     const [ambiente, setAmbiente] = useState("");
 
-    const [teste, setTeste ] = useState("ATLYS3");
+    const [teste, setTeste] = useState("ATLYS3");
 
     const { mindmap, clearBreadcrumb, addBreadcrumb } = useAppContext();
 
@@ -48,7 +48,7 @@ export function Filter(props) {
                 id="ambiente"
                 renderInput={(params) => <TextField {...params} label="Escolha um Ambiente" margin="normal" />}
                 onChange={(event: any, newValue: AmbienteData | null) => {
-                    if(newValue != null)
+                    if (newValue != null)
                         setAmbiente(newValue.id);
                     else
                         setAmbiente("");
