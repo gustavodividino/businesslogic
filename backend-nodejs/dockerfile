@@ -1,0 +1,14 @@
+FROM node:12.16.3
+
+WORKDIR /usr/backend-nodejs
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN ["apt-get", "update"]
+RUN ["apt-get", "install", "-y", "vim"]
+
+EXPOSE 3334
+CMD [ "npm", "start" ]

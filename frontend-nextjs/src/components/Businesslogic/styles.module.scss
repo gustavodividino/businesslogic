@@ -1,0 +1,92 @@
+@media only screen and (max-width: 1440px) {
+  .infoPortal {
+    height: 36.125rem;
+  }
+}
+
+@media only screen and (max-width: 1366px) {
+  .infoPortal {
+    height: 28.125rem;
+  }
+}
+
+.infoPortal {
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .detailPortal {
+    float: left;
+    width: 93%;
+    padding: 0.5rem;
+    table {
+      border-collapse: collapse;
+    }
+  }
+
+  .detailPortal__table {
+    display: table;
+    width: 100%;
+
+    .titleTable {
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+
+    .infoTeste {
+      white-space: nowrap;
+      width: 10.625rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .firstLine {
+      display: table-row;
+      line-height: 0.063rem;
+      background-color: gray;
+    }
+
+    thead tr {
+      th,
+      td {
+        border: 0;
+      }
+    }
+
+    th,
+    td {
+      font-size: 0.7rem;
+      font-weight: normal;
+      text-align: left;
+      padding: 0.25rem 0;
+      border-top: 0.063rem solid black;
+    }
+
+    td {
+      .button {
+        background: linear-gradient(60deg, #ab47bc, #8e24aa);
+        border: none;
+        color: white;
+        padding: 0.125rem 0.125rem;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.625rem;
+        margin-left: 0.25rem;
+        cursor: pointer;
+      }
+      &:last-child {
+        text-align: right;
+      }
+    }
+  }
+
+  .paper {
+    background-color: #fff;
+    border: 0.063rem solid #000;
+    box-shadow: yellowgreen;
+    padding: 0.125rem, 0.25rem, 0.188rem;
+    margin: 1rem;
+    background: #fff;
+    font-size: 0.625rem;
+    text-align: center;
+  }
+}
