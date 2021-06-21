@@ -8,7 +8,7 @@ import { api } from "../services/api";
 import { Output } from "../components/Output";
 import { Operation } from "../components/Operation";
 import { Businesslogic } from "../components/Businesslogic";
- 
+
 
 import { useAppContext } from "../context/MindmapContext";
 

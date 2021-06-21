@@ -31,10 +31,10 @@ export function Output() {
     loadPortalInfo();
   }, [systemOutput, portalOutput]);
 
-  function handleOpenFluxo(businesslogic : string, ambiente : string){
+  function handleOpenFluxo(businesslogic: string, ambiente: string) {
     const blogic = {
-      "ambiente" : ambiente,
-      "businesslogic" : businesslogic
+      "ambiente": ambiente,
+      "businesslogic": businesslogic
     }
     mindmap(blogic);
     addBreadcrumb(blogic);

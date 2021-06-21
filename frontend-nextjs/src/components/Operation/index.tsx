@@ -25,15 +25,15 @@ export function Operation() {
         loadOperationInfo();
     }, [operation]);
 
-    function handleOpenFluxo(businesslogic : string, ambiente : string){
+    function handleOpenFluxo(businesslogic: string, ambiente: string) {
         console.log(businesslogic + ambiente);
         const blogic = {
-          "ambiente" : ambiente,
-          "businesslogic" : businesslogic
+            "ambiente": ambiente,
+            "businesslogic": businesslogic
         }
         mindmap(blogic);
         addBreadcrumb(blogic);
-      }
+    }
 
     return (
         <div className={styles.infoPortal}>
