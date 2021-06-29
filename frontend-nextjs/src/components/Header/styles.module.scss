@@ -1,19 +1,20 @@
 .headerContainer {
   background: linear-gradient(60deg, #ab47bc, #8e24aa);
-  height: 4.2rem;
+  height: 2.5rem;
 
   top: 0;
-  padding-top: 0.938rem;
+  padding-top: 0.438rem;
+  padding-bottom: 0.438rem;
 
   .headerLogo {
     display: flex;
     flex-direction: row;
     align-items: center;
     color: var(--white);
-    margin-left: 8.625rem;
-
+    margin-left: 1rem;
+    
     img {
-      height: 3.125rem;
+      height: 2.5rem;
       margin-right: 0.938rem;
     }
 
