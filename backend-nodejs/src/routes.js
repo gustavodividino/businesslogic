@@ -28,6 +28,8 @@ routes.put('/carga/operation', CargaController.operation);
 routes.put('/carga/script', CargaController.scripts);
 routes.put('/carga/recollect', CargaController.recollect);
 
+routes.put('/carga/irptportals', CargaController.cdrsIRPT);
+
 
 routes.get('/portal/filter', PortalController.show);                       //Retorna informacao de um unico portal
 routes.get('/portal/filter/businesslogic', PortalController.findByBusinesslogic)             

@@ -40,6 +40,13 @@ module.exports = {
             path += "/";
           }
 
+          let statusPortal = linha[7].trim();
+          if (statusPortal == "A") {
+            statusPortal = "enable";
+          } else if (statusPortal == "S") {
+            statusPortal = "disable";
+          }
+
           const portal = {
             ambiente: ambiente,
             system: linha[0].trim(),
@@ -49,6 +56,7 @@ module.exports = {
             server: linha[4].trim(),
             path: path,
             script: linha[6].trim(),
+            status: statusPortal,
           };
 
           try {
@@ -316,12 +324,11 @@ module.exports = {
       });
 
       for await (const line of rl) {
-
         if (!line.indexOf("	References GDC Records:")) {
           pegarProximaLinha = false;
           pegarOperation = false;
         }
-        
+
         //Verifica se precisa pegar a linha Atual para conseguir pegar o OPERATOR do Script
         if (pegarProximaLinha && pegarOperation) {
           //pegarProximaLinha = false;
@@ -393,5 +400,49 @@ module.exports = {
     }
     console.log("Verificação de Recoleta concluído.");
     return response.sendStatus(200);
+  },
+
+  async cdrsIRPT(request, response) {
+    console.log("Iniciando carregando do IRPT ...");
+    let arquivos = await findFilesOnDirectory("_IRPT");
+    let portais = [];
+
+    for await (let file of arquivos) {
+      console.log("--------" + file + "---------------");
+      const fileStream = fs.createReadStream("files/" + file);
+
+      const fileName = file.split("_");
+      const ambiente = fileName[0];
+
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+      });
+
+      for await (const line of rl) {
+        const linha = line.replace('"', "").split(",");
+        const systemPortal = linha[1].replace('"', "").split("|");
+
+        let portalInput = await connection("TB_PORTAL").where({
+          system: systemPortal[0],
+          portal: systemPortal[1],
+        });
+
+        if (portalInput[0] != undefined) {
+          portalModel = await connection("TB_PORTAL")
+            .where({
+              system: systemPortal[0],
+              portal: systemPortal[1],
+            })
+            .update({
+              cdrs: linha[2],
+            });
+        }
+      }
+    }
+
+    console.log("Carregamento de Input IRPT concluído.");
+
+    return response.json(portais);
   },
 };
