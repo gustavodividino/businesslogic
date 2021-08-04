@@ -50,39 +50,39 @@ export default function Home(props: HomeProps) {
 
 
   return (
-    <div style={{ display: "flex", flexDirection: "column"}} >
+    <div className="container">
+      <div className="header">
+        <Header />
+      </div>
+      <div className="filter">
+        <Filter
+          {...props}
+        />
+      </div>
+      <div className="menuRight">
+        {
+          isOutput && (
+            <Output />
+          )
+        }
 
-      <Header />
+        {
+          isOperation && (
+            <Operation />
+          )
+        }
 
-      <Filter
-        {...props}
-      />
-
-      <div style={{ display: "flex", flexDirection: "row", marginLeft: "8px" }} >
-        <div style={{ width: "79%" }} >
-          <Mindmap />
-        </div>
-        <div style={{ width: "20%", background: "#fff", marginLeft: "5px" }} >
-          {
-            isOutput && (
-              <Output />
-            )
-          }
-
-          {
-            isOperation && (
-              <Operation />
-            )
-          }
-
-          {
-            isBusinessLogic && (
-              <Businesslogic />
-            )
-          }
-        </div>
+        {
+          isBusinessLogic && (
+            <Businesslogic />
+          )
+        }
+      </div>
+      <div className="main">
+        <Mindmap />
       </div>
     </div>
+
   )
 }
 

@@ -1,14 +1,83 @@
-:root{
-    --background: #dddfe1;
-    --white: #fff;
+:root {
+  --background: #dddfe1;
+  --white: #fff;
+
+  --principal: #660099;
+  --sec-rosa: #eb3c7d;
+  --sec-laranja: #ff9900;
+  --sec-verde: #99cc33;
+  --sec-azul: #0066cc;
+
+  --text-secundario: #666666;
+  --divisoria: #cccccc;
+  --icones: #dddddd;
+  --disable: #eeeeee;
+  --hover: #f7f7f7;
+  --background: #f9f9f9;
+
+  --white: #fff;
 }
 
-*{
-    margin: 0;
-    padding: 0;
+* {
+  margin: 0;
+  padding: 0;
 }
 
-body{
-    font-family: 'Inter', sans-serif;
-    background: var(--background);
+body,
+input,
+textarea,
+button {
+  font: 400 1rem Roboto, san-serif;
+}
+
+body {
+  background: var(--background);
+}
+
+li,
+button {
+  cursor: pointer;
+}
+
+li {
+  list-style: none;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: auto 300px;
+  grid-template-rows: 50px 60px auto;
+  gap: 5px 2px;
+  grid-template-areas:
+    "header header"
+    "filter filter"
+    "main menuRight"
+    "main menuRight";
+}
+
+.header {
+  grid-area: header;
+
+  /* Fixado */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.menuRight {
+  grid-area: menuRight;
+  border: 1px solid black;
+  margin-right: 5px;
+}
+
+.filter {
+  grid-area: filter;
+}
+
+.main {
+  grid-area: main;
+  gap: 15px;
+  border: 1px solid black;
+  margin-left: 5px;
 }
