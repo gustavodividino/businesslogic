@@ -85,6 +85,14 @@ export function Businesslogic() {
                 <th>Portal</th>
                 <td>{row.portal}</td>
               </tr>
+              <tr>
+                <th>Status</th>
+                <td>{row.status}</td>
+              </tr>
+              <tr>
+                <th>IRPT CDRs/Dia</th>
+                <td>~{row.cdrs}</td>
+              </tr>
               <tr className={styles.firstLine}>
                 <th></th>
                 <td></td>

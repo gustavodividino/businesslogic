@@ -75,6 +75,14 @@ export function Output() {
                 <th>Script</th>
                 <td>{row.script}</td>
               </tr>
+              <tr>
+                <th>Status</th>
+                <td>{row.status}</td>
+              </tr>
+              <tr>
+                <th>IRPT CDRs/Dia</th>
+                <td>~{row.cdrs}</td>
+              </tr>
             </tbody>
           ))}
         </table>
@@ -104,6 +112,10 @@ export function Output() {
                 <th>Server</th>
                 <td>{row.server}</td>
               </tr>
+              <tr>
+                <th>IRPT CDRs/Dia</th>
+                <td>~{row.cdrs}</td>
+              </tr>              
               <tr>
                 <th>BusinessLogic</th>
                 <td>{row.businesslogic}

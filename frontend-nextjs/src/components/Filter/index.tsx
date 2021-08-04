@@ -21,6 +21,8 @@ type PortalData = {
     path: string;
     server: string;
     recollect: string;
+    status : string;
+    cdrs: number;
 };
 
 type BusinessLogicData = {
