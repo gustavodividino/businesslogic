@@ -2,11 +2,46 @@ const connection = require("../../database/connection");
 const readline = require("readline");
 const fs = require("fs");
 
+
 const findFilesOnDirectory = require("../../utils/findFilesOnDirectory");
-//const { recollect } = require("./PortalController");
+
+const updateLog = async function(tableName, totalLinhas) {
+
+  const data = new Date();
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  const dataAtual = dia + '/' + mes + '/' + ano;
+
+
+  let tableUpdate = await connection("TB_UPDATE").where({
+    tableName: tableName,
+  });
+
+  if (tableUpdate[0] != undefined) {
+    tableUpdate = await connection("TB_UPDATE")
+      .where({
+        tableName: tableName,
+      })
+      .update({
+        totalLinhas: totalLinhas,
+        updated_at: dataAtual
+      });
+  } else {
+    tableUpdate = await connection("TB_UPDATE").insert({
+      tableName: tableName,
+      totalLinhas: totalLinhas,
+      created_at: dataAtual,
+      updated_at: dataAtual
+    });
+  }
+  return true;
+}	
+
 
 module.exports = {
   async portal(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando carregando dos Portais...");
     let arquivos = await findFilesOnDirectory("_PORTALROUTE_");
     let portais = [];
@@ -62,6 +97,7 @@ module.exports = {
           try {
             const operationModel = await connection("TB_PORTAL").insert(portal);
             portais.push(portal);
+            contadorLinhas++;
           } catch (e) {
             console.log(
               e +
@@ -77,12 +113,14 @@ module.exports = {
         }
       }
     }
+    updateLog("TB_PORTAL", contadorLinhas);
     console.log("Carregamento de Portais concluído.");
 
     return response.json(portais);
   },
 
   async rtg(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando carregando dos RTG...");
     let arquivos = await findFilesOnDirectory("_RTG_");
     let rtgs = [];
@@ -122,6 +160,7 @@ module.exports = {
             //Primeiro Processo do fluxo
             const rtgModel = await connection("TB_RTG").insert(rtg);
             rtgs.push(rtg);
+            contadorLinhas++;
           }
 
           //MIGCLI|||OUTPUT : MIGCLI | BACKUP
@@ -140,6 +179,7 @@ module.exports = {
 
             const rtgModel = await connection("TB_RTG").insert(rtg);
             rtgs.push(rtg);
+            contadorLinhas++;
           }
 
           //AMDOCS3|AMDCHECK_NE|TAB_NE|OPER : AMDOCS_NE
@@ -155,6 +195,7 @@ module.exports = {
             };
             const rtgModel = await connection("TB_RTG").insert(rtg);
             rtgs.push(rtg);
+            contadorLinhas++;
           }
 
           //BDOFSEP|BDO_F_SEPAR|BDO_0|OUTPUT : BDO | OUTTBF0
@@ -171,6 +212,7 @@ module.exports = {
             };
             const rtgModel = await connection("TB_RTG").insert(rtg);
             rtgs.push(rtg);
+            contadorLinhas++;
           }
 
           //FDETRA3|PROC026_V03|GAR_REC|TERM : 1
@@ -187,16 +229,19 @@ module.exports = {
             };
             const rtgModel = await connection("TB_RTG").insert(rtg);
             rtgs.push(rtg);
+            contadorLinhas++;
           }
         }
       }
     }
+    updateLog("TB_RTG", contadorLinhas);
     console.log("Carregamento de RTG concluído.");
 
     return response.json(rtgs);
   },
 
   async businesslogic(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando carregando dos BusinessLogic...");
     let arquivos = await findFilesOnDirectory("_BL_");
     let businesslogics = [];
@@ -233,6 +278,7 @@ module.exports = {
               "TB_BUSINESSLOGIC"
             ).insert(businesslogic);
             businesslogics.push(businesslogic);
+            contadorLinhas++;
           } catch (e) {
             console.log(
               e +
@@ -246,12 +292,14 @@ module.exports = {
         }
       }
     }
+    updateLog("TB_BUSINESSLOGIC", contadorLinhas);
     console.log("Carregamento de BusinessLogic concluído.");
 
     return response.json(businesslogics);
   },
 
   async operation(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando carregando dos Operation...");
     let arquivos = await findFilesOnDirectory("_OPER_");
     let operations = [];
@@ -287,6 +335,7 @@ module.exports = {
               operation
             );
             operations.push(operation);
+            contadorLinhas++;
           } catch (e) {
             console.log(
               e + ": [" + operation.ambiente + "][" + operation.operation + "]"
@@ -295,12 +344,14 @@ module.exports = {
         }
       }
     }
+    updateLog("TB_OPERATION", contadorLinhas);
     console.log("Carregamento de Operation concluído.");
 
     return response.json(operations);
   },
 
   async scripts(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando carregando dos Scripts...");
     let arquivos = await findFilesOnDirectory("_SCRIPT_");
 
@@ -349,6 +400,7 @@ module.exports = {
                 operation: operName.trim(),
               })
               .update(script);
+              contadorLinhas++;
           }
         }
 
@@ -365,12 +417,14 @@ module.exports = {
         }
       }
     }
+    updateLog("TB_OPERATION - Scripts", contadorLinhas);
     console.log("Carregamento de Script concluído.");
 
     return response.sendStatus(200);
   },
 
   async recollect(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando Verificação de Recoleta...");
     //Pesquisa todos os portais de Output
     let portalOutput = await connection("TB_PORTAL").where({
@@ -396,15 +450,18 @@ module.exports = {
           .update({
             recollect: "1",
           });
+          contadorLinhas++;
       }
     }
+    updateLog("TB_PORTAL - Recoletas", contadorLinhas);
     console.log("Verificação de Recoleta concluído.");
     return response.sendStatus(200);
   },
 
   async cdrsIRPT(request, response) {
+    let contadorLinhas = 0;
     console.log("Iniciando carregando do IRPT ...");
-    let arquivos = await findFilesOnDirectory("_IRPT");
+    let arquivos = await findFilesOnDirectory("IRPT");
     let portais = [];
 
     for await (let file of arquivos) {
@@ -424,8 +481,8 @@ module.exports = {
         const systemPortal = linha[1].replace('"', "").split("|");
 
         let portalInput = await connection("TB_PORTAL").where({
-          system: systemPortal[0],
-          portal: systemPortal[1],
+          system: systemPortal[0].trim(),
+          portal: systemPortal[1].trim(),
         });
 
         if (portalInput[0] != undefined) {
@@ -435,14 +492,17 @@ module.exports = {
               portal: systemPortal[1],
             })
             .update({
-              cdrs: linha[2],
+              cdrs: linha[2].trim(),
             });
+
+            contadorLinhas++;
         }
       }
     }
-
+    updateLog("TB_PORTAL - IRPTs", contadorLinhas);
     console.log("Carregamento de Input IRPT concluído.");
 
     return response.json(portais);
   },
+
 };
