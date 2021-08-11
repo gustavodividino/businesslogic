@@ -533,10 +533,15 @@ module.exports = {
           }
         }
       } else {
+        let system = "";
+        if(flow.system != "*"){
+          system = flow.system;
+        }
         portalInput = await connection("TB_PORTAL")
-          .where('system','like','%' + flow.system + '%')
+          .where('system','like','%' + system + '%')
           .andWhere('portal', '=', flow.portal)         
         ;
+        //console.log(system + flow.portal);
 
         for await (const portal of portalInput) {
           //console.log("Atualizando" + portal.system + portal.portal)
