@@ -6,6 +6,7 @@ const RtgController = require('./controllers/v2/RtgController')
 const PortalController = require('./controllers/v2/PortalController')
 const CargaController = require('./controllers/v2/CargasController')
 const OperationController = require('./controllers/v2/OperationController')
+const FluxoController = require('./controllers/v2/FluxoController')
 
 const routes = Router();
 
@@ -15,7 +16,7 @@ routes.get('/portal', PortalController.index);                       //Retorna t
 routes.get('/ambiente', AmbientesController.index);                  //Retorna todos os Ambientes cadastrados
 routes.get('/businesslogic', BusinessLogicController.index);         //Retorna todos os BusinessLogics cadastrados
 routes.get('/businesslogic/filter', BusinessLogicController.show);         
-
+routes.get('/fluxo', FluxoController.index);                        //Retibar todos os tipos de Fluxos
 
 routes.get('/rtg', RtgController.index);                             //Retorna todos os RTGs cadastrados
 routes.get('/rtg/filter', RtgController.show);                       //Retorna todos os RTGs cadastrados
@@ -29,6 +30,11 @@ routes.put('/carga/script', CargaController.scripts);
 routes.put('/carga/recollect', CargaController.recollect);
 
 routes.put('/carga/irptportals', CargaController.cdrsIRPT);
+
+routes.put('/carga/flows', CargaController.fluxos);
+
+
+routes.post('/carga/fluxo', FluxoController.store);
 
 
 routes.get('/portal/filter', PortalController.show);                       //Retorna informacao de um unico portal

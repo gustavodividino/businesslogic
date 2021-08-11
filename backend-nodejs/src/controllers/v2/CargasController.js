@@ -2,17 +2,14 @@ const connection = require("../../database/connection");
 const readline = require("readline");
 const fs = require("fs");
 
-
 const findFilesOnDirectory = require("../../utils/findFilesOnDirectory");
 
-const updateLog = async function(tableName, totalLinhas) {
-
+const updateLog = async function (tableName, totalLinhas) {
   const data = new Date();
-  const dia = String(data.getDate()).padStart(2, '0');
-  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, "0");
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
   const ano = data.getFullYear();
-  const dataAtual = dia + '/' + mes + '/' + ano;
-
+  const dataAtual = dia + "/" + mes + "/" + ano;
 
   let tableUpdate = await connection("TB_UPDATE").where({
     tableName: tableName,
@@ -25,19 +22,18 @@ const updateLog = async function(tableName, totalLinhas) {
       })
       .update({
         totalLinhas: totalLinhas,
-        updated_at: dataAtual
+        updated_at: dataAtual,
       });
   } else {
     tableUpdate = await connection("TB_UPDATE").insert({
       tableName: tableName,
       totalLinhas: totalLinhas,
       created_at: dataAtual,
-      updated_at: dataAtual
+      updated_at: dataAtual,
     });
   }
   return true;
-}	
-
+};
 
 module.exports = {
   async portal(request, response) {
@@ -400,7 +396,7 @@ module.exports = {
                 operation: operName.trim(),
               })
               .update(script);
-              contadorLinhas++;
+            contadorLinhas++;
           }
         }
 
@@ -450,7 +446,7 @@ module.exports = {
           .update({
             recollect: "1",
           });
-          contadorLinhas++;
+        contadorLinhas++;
       }
     }
     updateLog("TB_PORTAL - Recoletas", contadorLinhas);
@@ -495,7 +491,7 @@ module.exports = {
               cdrs: linha[2].trim(),
             });
 
-            contadorLinhas++;
+          contadorLinhas++;
         }
       }
     }
@@ -505,4 +501,60 @@ module.exports = {
     return response.json(portais);
   },
 
+  async fluxos(request, response) {
+    let portalInput = "";
+    let contadorLinhas = 0;
+    console.log("Iniciando Atualização de Fluxo.");
+    const flows = await connection("TB_FLUXO").orderBy([
+      { column: "flow", order: "asc" },
+    ]);
+
+    for await (const flow of flows) {
+      if (flow.isAll) {
+        if (flow.portal == "*") {
+          portalInput = await connection("TB_PORTAL").where(
+            "system",
+            "like",
+            "%" + flow.system + "%"
+          );
+
+          for await (const portal of portalInput) {
+            //console.log("Atualizando" + portal.system + portal.portal)
+            let portalUpdate = await connection("TB_PORTAL")
+              .where({
+                system: portal.system,
+                portal: portal.portal,
+              })
+              .update({
+                flow: flow.name,
+              });
+
+            contadorLinhas++;
+          }
+        }
+      } else {
+        portalInput = await connection("TB_PORTAL")
+          .where('system','like','%' + flow.system + '%')
+          .andWhere('portal', '=', flow.portal)         
+        ;
+
+        for await (const portal of portalInput) {
+          //console.log("Atualizando" + portal.system + portal.portal)
+          let portalUpdate = await connection("TB_PORTAL")
+            .where({
+              system: portal.system,
+              portal: portal.portal,
+            })
+            .update({
+              flow: flow.name,
+            });
+
+          contadorLinhas++;
+        }
+      }
+    }
+    updateLog("TB_PORTAL - Fluxo", contadorLinhas);
+    console.log("Atualização de Fluxo concluído.");
+    return response.json(portalInput);
+  },
 };

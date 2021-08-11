@@ -16,6 +16,7 @@ exports.up = function(knex) {
         table.string('recollect');
         table.string('status');
         table.integer('cdrs');
+        table.string('flow');
 
         table.primary(['ambiente', 'system', 'portal']);
 

@@ -38,10 +38,21 @@ type BusinessLogic = {
   description: string;
 };
 
+type Fluxo = {
+  id: string;
+  system: string;
+  portal: string;
+  name: string;
+  description: string;
+  isAll : boolean;
+};
+
+
 type HomeProps = {
   ambientes: Ambiente[];
   portais: Portal[];
   businesslogics: BusinessLogic[];
+  fluxos : Fluxo[];
 };
 
 export default function Home(props: HomeProps) {
@@ -95,13 +106,15 @@ export async function getStaticProps() {
   const ambientes = await api.get("ambiente");
   const portais = await api.get("portal");
   const businesslogics = await api.get("businesslogic");
+  const fluxos = await api.get("fluxo");
 
 
   return {
     props: {
       ambientes: ambientes.data,
       portais: portais.data,
-      businesslogics: businesslogics.data
+      businesslogics: businesslogics.data,
+      fluxos : fluxos.data
     },
     revalidate: (60 * 60 * 24), //revalidar a cada 24 horas
   }

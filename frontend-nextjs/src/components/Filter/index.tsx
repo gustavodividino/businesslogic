@@ -12,6 +12,15 @@ type AmbienteData = {
     name: string;
 };
 
+type FluxoData = {
+    flow: string;
+    system: string;
+    portal: string;
+    name: string;
+    description: string;
+    isAll: boolean;
+};
+
 type PortalData = {
     ambiente: string;
     system: string;
@@ -21,8 +30,9 @@ type PortalData = {
     path: string;
     server: string;
     recollect: string;
-    status : string;
+    status: string;
     cdrs: number;
+    flow: string;
 };
 
 type BusinessLogicData = {
@@ -35,6 +45,8 @@ type BusinessLogicData = {
 export function Filter(props) {
 
     const [ambiente, setAmbiente] = useState("");
+    const [fluxo, setFluxo] = useState("");
+
 
     const [teste, setTeste] = useState("ATLYS3");
 
@@ -50,16 +62,39 @@ export function Filter(props) {
                 id="ambiente"
                 renderInput={(params) => <TextField {...params} label="Escolha um Ambiente" margin="normal" />}
                 onChange={(event: any, newValue: AmbienteData | null) => {
-                    if (newValue != null)
+                    if (newValue != null) {
                         setAmbiente(newValue.id);
-                    else
-                        setAmbiente("");
+                        setFluxo("");
+                    }
+                    else { setAmbiente(""); }
                 }}
             />
 
             <Autocomplete
                 className={styles.autocomplete}
-                options={ambiente == "" ? props.portais : props.portais.filter((objeto: PortalData) => objeto.ambiente === ambiente)}
+                options={props.fluxos}
+                getOptionLabel={(option: FluxoData) =>  option.flow + " - " + option.name}
+                id="fluxo"
+                renderInput={(params) => <TextField {...params} label="Escolha um Fluxo" margin="normal" />}
+                onChange={(event: any, newValue: FluxoData | null) => {
+                    if (newValue != null) {
+                        setFluxo(newValue.name);
+                        setAmbiente("");
+                    }
+                    else { setFluxo(""); }
+                }}
+            />
+
+
+
+            <Autocomplete
+                className={styles.autocomplete}
+                //options={ambiente == "" && fluxo == "" ? props.portais : props.portais.filter((objeto: PortalData) => objeto.ambiente === ambiente)}
+                options={
+                        ambiente != "" ? props.portais.filter((objeto: PortalData) => objeto.ambiente === ambiente) :
+                        fluxo != "" ?    props.portais.filter((objeto: PortalData) => objeto.flow === fluxo) : props.portais
+                }
+
                 getOptionLabel={(option: PortalData) => option.system + "|" + option.portal}
                 groupBy={(option: PortalData) => option.ambiente}
                 id="portal"
