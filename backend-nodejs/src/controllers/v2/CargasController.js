@@ -1,3 +1,4 @@
+require("dotenv/config");
 const connection = require("../../database/connection");
 const readline = require("readline");
 const fs = require("fs");
@@ -9,7 +10,7 @@ const updateLog = async function (tableName, totalLinhas) {
   const dia = String(data.getDate()).padStart(2, "0");
   const mes = String(data.getMonth() + 1).padStart(2, "0");
   const ano = data.getFullYear();
-  const dataAtual = dia + "/" + mes + "/" + ano;
+  const dataAtual = mes + "/" + dia + "/" + ano;
 
   let tableUpdate = await connection("TB_UPDATE").where({
     tableName: tableName,
@@ -360,6 +361,8 @@ module.exports = {
 
     for await (let file of arquivos) {
       console.log("--------" + file + "---------------");
+      let scriptPath = "";
+
       const fileStream = fs.createReadStream("files/" + file);
 
       const fileName = file.split("_");
@@ -386,8 +389,16 @@ module.exports = {
             operName = line.split("-")[0];
             //console.log(ambiente + "|" + operName.trim() + "|" + scriptName.trim() + "|" + descriptionScript.trim());
 
+            if (!ambiente.indexOf("FIX-")) {
+              scriptPath = process.env.FIXA_REPO;
+            } else if (!ambiente.indexOf("RMG")) {
+              scriptPath = "";
+            } else {
+              scriptPath = process.env.MOVEL_REPO;
+            }
+
             const script = {
-              script: scriptName.trim(),
+              script: scriptPath + scriptName.trim() + ".scr",
               scriptDescription: descriptionScript.trim(),
             };
             operModel = await connection("TB_OPERATION")
@@ -423,9 +434,9 @@ module.exports = {
     let contadorLinhas = 0;
     console.log("Iniciando Verificação de Recoleta...");
     //Pesquisa todos os portais de Output
-    let portalOutput = await connection("TB_PORTAL").where({
-      type: "O",
-    });
+    let portalOutput = await connection("TB_PORTAL")
+      .where("type", "=", "O")
+      .whereNot("path", "=", "/");
 
     //console.log("Verificando: " + portalOutput.length);
 
@@ -446,6 +457,17 @@ module.exports = {
           .update({
             recollect: "1",
           });
+          const portalOut = 'OUTPUT:' + portal.system + '|' + portal.portal;
+
+          await connection("TB_RTG")
+          .where({
+            ambiente: portal.ambiente,
+            nextLevel : portalOut
+          })
+          .update({
+            recollect: "1",
+          });
+
         contadorLinhas++;
       }
     }
@@ -457,7 +479,7 @@ module.exports = {
   async cdrsIRPT(request, response) {
     let contadorLinhas = 0;
     console.log("Iniciando carregando do IRPT ...");
-    let arquivos = await findFilesOnDirectory("IRPT");
+    let arquivos = await findFilesOnDirectory("IRPT_CDR");
     let portais = [];
 
     for await (let file of arquivos) {
@@ -475,6 +497,7 @@ module.exports = {
       for await (const line of rl) {
         const linha = line.replace('"', "").split(",");
         const systemPortal = linha[1].replace('"', "").split("|");
+        //console.log(systemPortal[0] + '-' + systemPortal[1] + '-' +linha[2].trim());
 
         let portalInput = await connection("TB_PORTAL").where({
           system: systemPortal[0].trim(),
@@ -484,8 +507,8 @@ module.exports = {
         if (portalInput[0] != undefined) {
           portalModel = await connection("TB_PORTAL")
             .where({
-              system: systemPortal[0],
-              portal: systemPortal[1],
+              system: systemPortal[0].trim(),
+              portal: systemPortal[1].trim(),
             })
             .update({
               cdrs: linha[2].trim(),
@@ -534,13 +557,12 @@ module.exports = {
         }
       } else {
         let system = "";
-        if(flow.system != "*"){
+        if (flow.system != "*") {
           system = flow.system;
         }
         portalInput = await connection("TB_PORTAL")
-          .where('system','like','%' + system + '%')
-          .andWhere('portal', '=', flow.portal)         
-        ;
+          .where("system", "like", "%" + system + "%")
+          .andWhere("portal", "=", flow.portal);
         //console.log(system + flow.portal);
 
         for await (const portal of portalInput) {
@@ -561,5 +583,53 @@ module.exports = {
     updateLog("TB_PORTAL - Fluxo", contadorLinhas);
     console.log("Atualização de Fluxo concluído.");
     return response.json(portalInput);
+  },
+
+  async etapasIRPT(request, response) {
+    let contadorLinhas = 0;
+    console.log("Iniciando carregando do Etapas IRPT ...");
+    let arquivos = await findFilesOnDirectory("IRPT_ETAPAS_");
+    let portais = [];
+
+    for await (let file of arquivos) {
+      console.log("--------" + file + "---------------");
+      const fileStream = fs.createReadStream("files/" + file);
+
+      const fileName = file.split("_");
+      const ambiente = fileName[0];
+
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+      });
+
+      for await (const line of rl) {
+        const linha = line.replace('"', "").split(",");
+        const systemPortal = linha[0].replace('"', "").split("|");
+
+        //console.log(systemPortal[0] + '-' + systemPortal[1] + '-' + linha[1].trim());
+
+        let portalEtapas = await connection("TB_ETAPA").where({
+          system: systemPortal[0].trim(),
+          portal: systemPortal[1].trim(),
+          etapa: linha[1].trim(),
+        });
+
+        if (portalEtapas[0] == undefined) {
+          await connection("TB_ETAPA")
+            .insert({
+              system: systemPortal[0].trim(),
+              portal: systemPortal[1].trim(),
+              etapa: linha[1].trim()
+            })
+            
+          contadorLinhas++;
+        }
+      }
+    }
+    updateLog("TB_ETAPA - Etapas IRPTs", contadorLinhas);
+    console.log("Carregamento de Input Etapas IRPTs concluído.");
+
+    return response.json(portais);
   },
 };

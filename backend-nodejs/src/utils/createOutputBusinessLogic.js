@@ -1,3 +1,4 @@
+const { recollect } = require("../controllers/v2/CargasController");
 const connection = require("../database/connection");
 
 module.exports = function createOutputBusinessLogic(isFirst, element) {
@@ -5,7 +6,6 @@ module.exports = function createOutputBusinessLogic(isFirst, element) {
   let style = {};
   let outputName = element.nextLevel.trim().split(":");
   let name = outputName[1].trim();
-
 /*  let portalRecollect = await connection("TB_PORTAL").where({
     system: name.split("|")[0].trim(),
     portal: name.split("|")[1].trim(),
@@ -13,13 +13,12 @@ module.exports = function createOutputBusinessLogic(isFirst, element) {
   });
 */
 
-  if (1 == 2) {
-    name += '*';
+  if (element.recollect == "1") {
+    console.log(name + '|' + element.recollect)
     style = {
-      background: "#a5a5f9",
-      fontWeight: "bold",
+      background: "#99cc00",
       color: "#333",
-      border: "1px solid 222138",
+      border: "1px solid #222138",
       width: 110,
     };
   } else {
@@ -41,5 +40,9 @@ module.exports = function createOutputBusinessLogic(isFirst, element) {
     draggable: false,
     style: style,
   };
+
+  console.log(output);
+
+
   return output;
 };

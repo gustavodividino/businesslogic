@@ -7,6 +7,7 @@ const PortalController = require('./controllers/v2/PortalController')
 const CargaController = require('./controllers/v2/CargasController')
 const OperationController = require('./controllers/v2/OperationController')
 const FluxoController = require('./controllers/v2/FluxoController')
+const AtualizacaoController = require('./controllers/v2/AtualizacaoController')
 
 const routes = Router();
 
@@ -30,6 +31,7 @@ routes.put('/carga/script', CargaController.scripts);
 routes.put('/carga/recollect', CargaController.recollect);
 
 routes.put('/carga/irptportals', CargaController.cdrsIRPT);
+routes.put('/carga/irptetapas', CargaController.etapasIRPT);
 
 routes.put('/carga/flows', CargaController.fluxos);
 
@@ -51,5 +53,6 @@ routes.get('/operation/filter/script/association', OperationController.findByAss
 
 routes.get('/createbusinesslogic', BusinessLogicController.createBusinessLogic);  //Retorna a criação de um BusinessLogic
 
+routes.get('/atualizacao', AtualizacaoController.index);
 
 module.exports = routes;
