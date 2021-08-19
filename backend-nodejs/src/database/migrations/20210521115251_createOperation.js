@@ -1,7 +1,7 @@
 
 exports.up = function(knex) {
   
-    return knex.schema.createTable('TB_OPERATION', function(table){
+    return knex.schema.createTable('TB_MM_OPERATION', function(table){
         //table.increments();
 
         table.string('ambiente').notNullable();
@@ -19,5 +19,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-    return knex.schema.dropTable('TB_OPERATION');
+    return knex.schema.dropTable('TB_MM_OPERATION');
 };

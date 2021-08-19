@@ -1,7 +1,7 @@
 
 exports.up = function(knex) {
   
-    return knex.schema.createTable('TB_PORTAL', function(table){
+    return knex.schema.createTable('TB_MM_PORTAL', function(table){
         //table.increments();
 
         table.string('ambiente').notNullable();
@@ -25,5 +25,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-    return knex.schema.dropTable('TB_PORTAL');
+    return knex.schema.dropTable('TB_MM_PORTAL');
 };

@@ -12,12 +12,12 @@ const updateLog = async function (tableName, totalLinhas) {
   const ano = data.getFullYear();
   const dataAtual = mes + "/" + dia + "/" + ano;
 
-  let tableUpdate = await connection("TB_UPDATE").where({
+  let tableUpdate = await connection("TB_MM_UPDATE").where({
     tableName: tableName,
   });
 
   if (tableUpdate[0] != undefined) {
-    tableUpdate = await connection("TB_UPDATE")
+    tableUpdate = await connection("TB_MM_UPDATE")
       .where({
         tableName: tableName,
       })
@@ -26,7 +26,7 @@ const updateLog = async function (tableName, totalLinhas) {
         updated_at: dataAtual,
       });
   } else {
-    tableUpdate = await connection("TB_UPDATE").insert({
+    tableUpdate = await connection("TB_MM_UPDATE").insert({
       tableName: tableName,
       totalLinhas: totalLinhas,
       created_at: dataAtual,
@@ -39,6 +39,7 @@ const updateLog = async function (tableName, totalLinhas) {
 module.exports = {
   async portal(request, response) {
     let contadorLinhas = 0;
+    let scriptPath = "";
     console.log("Iniciando carregando dos Portais...");
     let arquivos = await findFilesOnDirectory("_PORTALROUTE_");
     let portais = [];
@@ -72,6 +73,14 @@ module.exports = {
             path += "/";
           }
 
+          if (!ambiente.indexOf("FIX-")) {
+            scriptPath = process.env.FIXA_REPO;
+          } else if (!ambiente.indexOf("RMG")) {
+            scriptPath = "";
+          } else {
+            scriptPath = process.env.MOVEL_REPO;
+          }
+
           let statusPortal = linha[7].trim();
           if (statusPortal == "A") {
             statusPortal = "enable";
@@ -87,12 +96,12 @@ module.exports = {
             businesslogic: linha[3].trim(),
             server: linha[4].trim(),
             path: path,
-            script: linha[6].trim(),
+            script: scriptPath + linha[6].trim() + ".scr",
             status: statusPortal,
           };
 
           try {
-            const operationModel = await connection("TB_PORTAL").insert(portal);
+            const operationModel = await connection("TB_MM_PORTAL").insert(portal);
             portais.push(portal);
             contadorLinhas++;
           } catch (e) {
@@ -110,7 +119,14 @@ module.exports = {
         }
       }
     }
-    updateLog("TB_PORTAL", contadorLinhas);
+
+    await connection("TB_MM_PORTAL")
+      .where("path", "like", "/cgi/RMG/output/medout/rsr/%")
+      .update({
+        path: "/cgi/RMG/output/medout/rsr/",
+      });
+
+    updateLog("TB_MM_PORTAL", contadorLinhas);
     console.log("Carregamento de Portais concluído.");
 
     return response.json(portais);
@@ -155,7 +171,7 @@ module.exports = {
             };
 
             //Primeiro Processo do fluxo
-            const rtgModel = await connection("TB_RTG").insert(rtg);
+            const rtgModel = await connection("TB_MM_RTG").insert(rtg);
             rtgs.push(rtg);
             contadorLinhas++;
           }
@@ -174,7 +190,7 @@ module.exports = {
               type: linha[3].substring(0, 6),
             };
 
-            const rtgModel = await connection("TB_RTG").insert(rtg);
+            const rtgModel = await connection("TB_MM_RTG").insert(rtg);
             rtgs.push(rtg);
             contadorLinhas++;
           }
@@ -190,7 +206,7 @@ module.exports = {
               nextLevel: linha[3],
               type: linha[3].substring(0, 4),
             };
-            const rtgModel = await connection("TB_RTG").insert(rtg);
+            const rtgModel = await connection("TB_MM_RTG").insert(rtg);
             rtgs.push(rtg);
             contadorLinhas++;
           }
@@ -207,7 +223,7 @@ module.exports = {
               nextLevel: outputTeste.replace(/ /g, ""),
               type: linha[3].substring(0, 6),
             };
-            const rtgModel = await connection("TB_RTG").insert(rtg);
+            const rtgModel = await connection("TB_MM_RTG").insert(rtg);
             rtgs.push(rtg);
             contadorLinhas++;
           }
@@ -224,14 +240,14 @@ module.exports = {
               nextLevel: linha[3],
               type: linha[3].substring(0, 4),
             };
-            const rtgModel = await connection("TB_RTG").insert(rtg);
+            const rtgModel = await connection("TB_MM_RTG").insert(rtg);
             rtgs.push(rtg);
             contadorLinhas++;
           }
         }
       }
     }
-    updateLog("TB_RTG", contadorLinhas);
+    updateLog("TB_MM_RTG", contadorLinhas);
     console.log("Carregamento de RTG concluído.");
 
     return response.json(rtgs);
@@ -272,7 +288,7 @@ module.exports = {
 
           try {
             const businesslogicModel = await connection(
-              "TB_BUSINESSLOGIC"
+              "TB_MM_BUSINESSLOGIC"
             ).insert(businesslogic);
             businesslogics.push(businesslogic);
             contadorLinhas++;
@@ -289,7 +305,7 @@ module.exports = {
         }
       }
     }
-    updateLog("TB_BUSINESSLOGIC", contadorLinhas);
+    updateLog("TB_MM_BUSINESSLOGIC", contadorLinhas);
     console.log("Carregamento de BusinessLogic concluído.");
 
     return response.json(businesslogics);
@@ -328,7 +344,7 @@ module.exports = {
           };
 
           try {
-            const operationModel = await connection("TB_OPERATION").insert(
+            const operationModel = await connection("TB_MM_OPERATION").insert(
               operation
             );
             operations.push(operation);
@@ -341,7 +357,7 @@ module.exports = {
         }
       }
     }
-    updateLog("TB_OPERATION", contadorLinhas);
+    updateLog("TB_MM_OPERATION", contadorLinhas);
     console.log("Carregamento de Operation concluído.");
 
     return response.json(operations);
@@ -401,7 +417,7 @@ module.exports = {
               script: scriptPath + scriptName.trim() + ".scr",
               scriptDescription: descriptionScript.trim(),
             };
-            operModel = await connection("TB_OPERATION")
+            operModel = await connection("TB_MM_OPERATION")
               .where({
                 ambiente: ambiente,
                 operation: operName.trim(),
@@ -424,7 +440,7 @@ module.exports = {
         }
       }
     }
-    updateLog("TB_OPERATION - Scripts", contadorLinhas);
+    updateLog("TB_MM_OPERATION - Scripts", contadorLinhas);
     console.log("Carregamento de Script concluído.");
 
     return response.sendStatus(200);
@@ -434,20 +450,20 @@ module.exports = {
     let contadorLinhas = 0;
     console.log("Iniciando Verificação de Recoleta...");
     //Pesquisa todos os portais de Output
-    let portalOutput = await connection("TB_PORTAL")
+    let portalOutput = await connection("TB_MM_PORTAL")
       .where("type", "=", "O")
       .whereNot("path", "=", "/");
 
     //console.log("Verificando: " + portalOutput.length);
 
     for await (let portal of portalOutput) {
-      let portalInput = await connection("TB_PORTAL").where({
+      let portalInput = await connection("TB_MM_PORTAL").where({
         path: portal.path,
         type: "I",
       });
 
       if (portalInput[0] != undefined) {
-        portalModel = await connection("TB_PORTAL")
+        portalModel = await connection("TB_MM_PORTAL")
           .where({
             ambiente: portal.ambiente,
             system: portal.system,
@@ -457,12 +473,12 @@ module.exports = {
           .update({
             recollect: "1",
           });
-          const portalOut = 'OUTPUT:' + portal.system + '|' + portal.portal;
+        const portalOut = "OUTPUT:" + portal.system + "|" + portal.portal;
 
-          await connection("TB_RTG")
+        await connection("TB_MM_RTG")
           .where({
             ambiente: portal.ambiente,
-            nextLevel : portalOut
+            nextLevel: portalOut,
           })
           .update({
             recollect: "1",
@@ -471,7 +487,7 @@ module.exports = {
         contadorLinhas++;
       }
     }
-    updateLog("TB_PORTAL - Recoletas", contadorLinhas);
+    updateLog("TB_MM_PORTAL - Recoletas", contadorLinhas);
     console.log("Verificação de Recoleta concluído.");
     return response.sendStatus(200);
   },
@@ -499,13 +515,13 @@ module.exports = {
         const systemPortal = linha[1].replace('"', "").split("|");
         //console.log(systemPortal[0] + '-' + systemPortal[1] + '-' +linha[2].trim());
 
-        let portalInput = await connection("TB_PORTAL").where({
+        let portalInput = await connection("TB_MM_PORTAL").where({
           system: systemPortal[0].trim(),
           portal: systemPortal[1].trim(),
         });
 
         if (portalInput[0] != undefined) {
-          portalModel = await connection("TB_PORTAL")
+          portalModel = await connection("TB_MM_PORTAL")
             .where({
               system: systemPortal[0].trim(),
               portal: systemPortal[1].trim(),
@@ -518,7 +534,7 @@ module.exports = {
         }
       }
     }
-    updateLog("TB_PORTAL - IRPTs", contadorLinhas);
+    updateLog("TB_MM_PORTAL - IRPTs", contadorLinhas);
     console.log("Carregamento de Input IRPT concluído.");
 
     return response.json(portais);
@@ -528,14 +544,14 @@ module.exports = {
     let portalInput = "";
     let contadorLinhas = 0;
     console.log("Iniciando Atualização de Fluxo.");
-    const flows = await connection("TB_FLUXO").orderBy([
+    const flows = await connection("TB_MM_FLUXO").orderBy([
       { column: "flow", order: "asc" },
     ]);
 
     for await (const flow of flows) {
       if (flow.isAll) {
         if (flow.portal == "*") {
-          portalInput = await connection("TB_PORTAL").where(
+          portalInput = await connection("TB_MM_PORTAL").where(
             "system",
             "like",
             "%" + flow.system + "%"
@@ -543,7 +559,7 @@ module.exports = {
 
           for await (const portal of portalInput) {
             //console.log("Atualizando" + portal.system + portal.portal)
-            let portalUpdate = await connection("TB_PORTAL")
+            let portalUpdate = await connection("TB_MM_PORTAL")
               .where({
                 system: portal.system,
                 portal: portal.portal,
@@ -560,14 +576,14 @@ module.exports = {
         if (flow.system != "*") {
           system = flow.system;
         }
-        portalInput = await connection("TB_PORTAL")
+        portalInput = await connection("TB_MM_PORTAL")
           .where("system", "like", "%" + system + "%")
           .andWhere("portal", "=", flow.portal);
         //console.log(system + flow.portal);
 
         for await (const portal of portalInput) {
           //console.log("Atualizando" + portal.system + portal.portal)
-          let portalUpdate = await connection("TB_PORTAL")
+          let portalUpdate = await connection("TB_MM_PORTAL")
             .where({
               system: portal.system,
               portal: portal.portal,
@@ -580,7 +596,7 @@ module.exports = {
         }
       }
     }
-    updateLog("TB_PORTAL - Fluxo", contadorLinhas);
+    updateLog("TB_MM_PORTAL - Fluxo", contadorLinhas);
     console.log("Atualização de Fluxo concluído.");
     return response.json(portalInput);
   },
@@ -609,25 +625,24 @@ module.exports = {
 
         //console.log(systemPortal[0] + '-' + systemPortal[1] + '-' + linha[1].trim());
 
-        let portalEtapas = await connection("TB_ETAPA").where({
+        let portalEtapas = await connection("TB_MM_ETAPA").where({
           system: systemPortal[0].trim(),
           portal: systemPortal[1].trim(),
           etapa: linha[1].trim(),
         });
 
         if (portalEtapas[0] == undefined) {
-          await connection("TB_ETAPA")
-            .insert({
-              system: systemPortal[0].trim(),
-              portal: systemPortal[1].trim(),
-              etapa: linha[1].trim()
-            })
-            
+          await connection("TB_MM_ETAPA").insert({
+            system: systemPortal[0].trim(),
+            portal: systemPortal[1].trim(),
+            etapa: linha[1].trim(),
+          });
+
           contadorLinhas++;
         }
       }
     }
-    updateLog("TB_ETAPA - Etapas IRPTs", contadorLinhas);
+    updateLog("TB_MM_ETAPA - Etapas IRPTs", contadorLinhas);
     console.log("Carregamento de Input Etapas IRPTs concluído.");
 
     return response.json(portais);

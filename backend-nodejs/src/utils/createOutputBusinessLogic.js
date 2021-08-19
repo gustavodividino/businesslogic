@@ -14,7 +14,6 @@ module.exports = function createOutputBusinessLogic(isFirst, element) {
 */
 
   if (element.recollect == "1") {
-    console.log(name + '|' + element.recollect)
     style = {
       background: "#99cc00",
       color: "#333",
@@ -40,9 +39,6 @@ module.exports = function createOutputBusinessLogic(isFirst, element) {
     draggable: false,
     style: style,
   };
-
-  console.log(output);
-
 
   return output;
 };

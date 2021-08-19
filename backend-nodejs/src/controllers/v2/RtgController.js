@@ -2,7 +2,7 @@ const connection = require("../../database/connection");
 
 module.exports = {
   async index(request, response) {
-    let rtg = await connection("TB_RTG").orderBy([
+    let rtg = await connection("TB_MM_RTG").orderBy([
       { column: "ambiente", order: "asc" },
     ]);
 
@@ -12,7 +12,7 @@ module.exports = {
   async show(request, response) {
     const { businesslogic, ambiente } = request.query;
 
-    let rtg = await connection("TB_RTG").where({
+    let rtg = await connection("TB_MM_RTG").where({
       ambiente: ambiente,
       businesslogic: businesslogic,
     });

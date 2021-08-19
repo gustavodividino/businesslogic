@@ -6,7 +6,7 @@ const createEdgeBusinesslogic = require("../../utils/createEdgeBusinessLogic");
 
 module.exports = {
   async index(request, response) {
-    let businesslogic = await connection("TB_BUSINESSLOGIC").orderBy([
+    let businesslogic = await connection("TB_MM_BUSINESSLOGIC").orderBy([
       { column: "ambiente", order: "asc" },
       { column: "businesslogic", order: "asc" },
     ]);
@@ -19,7 +19,7 @@ module.exports = {
     const { ambiente, businesslogic } = request.query;
 
     if(ambiente != "" && businesslogic != ""){
-      let businesslogics = await connection("TB_BUSINESSLOGIC").where({
+      let businesslogics = await connection("TB_MM_BUSINESSLOGIC").where({
         ambiente: ambiente,
         businesslogic: businesslogic,
       });
@@ -34,7 +34,7 @@ module.exports = {
 
     let operacoes = [];
 
-    let rtg = await connection("TB_RTG").where({
+    let rtg = await connection("TB_MM_RTG").where({
       ambiente: ambiente,
       businesslogic: businessLogic,
     });
