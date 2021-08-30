@@ -53,6 +53,11 @@ li {
     "filter filter"
     "main menuRight"
     "main menuRight";
+
+  &.sidebar-expand {
+    grid-template-columns: auto 25px;
+    overflow: hidden;
+  }
 }
 
 .header {
@@ -69,6 +74,10 @@ li {
   grid-area: menuRight;
   border: 1px solid black;
   margin-right: 5px;
+
+  i{
+    cursor: pointer;
+  }
 }
 
 .filter {

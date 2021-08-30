@@ -120,6 +120,25 @@ export function Mindmap() {
     }
   };
 
+
+  /*
+  TESTE ADD NODE
+
+
+const addNode = useCallback(() => {
+    const newNode = {
+      id: `randomnode_${+new Date()}`,
+      data: { label: 'Added node' },
+      position: {
+        x: Math.random() * window.innerWidth - 100,
+        y: Math.random() * window.innerHeight,
+      },
+    };
+    setElements((elements) => elements.concat(newNode));
+  }, [elements]);
+  <button onClick={addNode}>Add New Node</button>
+*/
+
   return (
     <div>
       <div className={styles.navigation}>

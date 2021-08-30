@@ -63,7 +63,7 @@ export function Operation() {
                             </tr>
                             <tr>
                                 <th>Script</th>
-                                <td>{row.script}</td>
+                                <td><a target="_blank" href={row.script}>Abrir Script</a></td>
                             </tr>
                             <tr>
                                 <th>Script Desc.</th>

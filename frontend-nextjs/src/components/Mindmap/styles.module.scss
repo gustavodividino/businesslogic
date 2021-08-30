@@ -1,15 +1,24 @@
+@media only screen and (max-width: 1366px) {
+  .mindmap {
+    height: 76vh;
+  }
+}
 
-@media only screen and (max-width: 1440px) {
-    .mindmap {
-      height: 38.125rem;
-    }
+@media only screen and (min-width: 1440px) {
+  .mindmap {
+    height: 80vh;
   }
-  
-  @media only screen and (max-width: 1366px) {
-    .mindmap {
-      height: 30.125rem;
-    }
+}
+
+
+@media only screen and (min-width: 1920px) {
+  .mindmap {
+    height: 87vh;
   }
+}
+
+
+
   
   .mindmap {
 

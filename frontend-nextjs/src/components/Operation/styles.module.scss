@@ -1,14 +1,21 @@
-@media only screen and (max-width: 1440px) {
-    .infoPortal {
-      height: 36.125rem;
-    }
+@media only screen and (max-width: 1366px) {
+  .infoPortal {
+    height: 76vh;
   }
-  
-  @media only screen and (max-width: 1366px) {
-    .infoPortal {
-      height: 28.125rem;
-    }
+}
+
+@media only screen and (min-width: 1440px) {
+  .infoPortal {
+    height: 80vh;
   }
+}
+
+
+@media only screen and (min-width: 1920px) {
+  .infoPortal {
+    height: 87vh;
+  }
+}
   
   .infoPortal {
     overflow-y: auto;

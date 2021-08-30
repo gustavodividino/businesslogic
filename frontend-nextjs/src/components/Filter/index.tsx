@@ -89,7 +89,6 @@ export function Filter(props) {
 
             <Autocomplete
                 className={styles.autocomplete}
-                //options={ambiente == "" && fluxo == "" ? props.portais : props.portais.filter((objeto: PortalData) => objeto.ambiente === ambiente)}
                 options={
                         ambiente != "" ? props.portais.filter((objeto: PortalData) => objeto.ambiente === ambiente) :
                         fluxo != "" ?    props.portais.filter((objeto: PortalData) => objeto.flow === fluxo) : props.portais

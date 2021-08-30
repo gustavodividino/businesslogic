@@ -4,6 +4,7 @@ import styles from "./styles.module.scss";
 import { useAppContext } from "../../context/MindmapContext";
 import { api } from "../../services/api";
 
+import { FormatNumber } from '../../utils/FormatNumber'
 
 export function Businesslogic() {
 
@@ -91,7 +92,7 @@ export function Businesslogic() {
               </tr>
               <tr>
                 <th>IRPT CDRs/Dia</th>
-                <td>~{row.cdrs}</td>
+                <td><FormatNumber format="0.00a" >{row.cdrs}</FormatNumber></td>
               </tr>
               <tr className={styles.firstLine}>
                 <th></th>

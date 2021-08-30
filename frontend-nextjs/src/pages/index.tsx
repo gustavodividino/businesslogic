@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Header } from "../components/Header";
 import { Filter } from "../components/Filter";
@@ -58,10 +58,17 @@ type HomeProps = {
 export default function Home(props: HomeProps) {
 
   const { isOutput, isOperation, isBusinessLogic } = useAppContext();
+  const [ isCollapsed, setIsCollapsed ] = useState(false);
 
+  function collapseSideBar(){
+    if(!isCollapsed)
+      setIsCollapsed(true)
+    else 
+      setIsCollapsed(false)
+  }
 
   return (
-    <div className="container">
+    <div className={isCollapsed ? "container sidebar-expand" : "container"}>
       <div className="header">
         <Header />
       </div>
@@ -70,7 +77,18 @@ export default function Home(props: HomeProps) {
           {...props}
         />
       </div>
+
+
       <div className="menuRight">
+        {          
+          isCollapsed ? (
+            <i className="las la-angle-double-left" onClick={collapseSideBar} title="Expandir Informações"></i>            
+          ):(
+            <i className="las la-angle-double-right" onClick={collapseSideBar} title="Recolher Informações"></i>
+          )
+        }
+       
+        
         {
           isOutput && (
             <Output />
@@ -89,7 +107,7 @@ export default function Home(props: HomeProps) {
           )
         }
       </div>
-      <div className="main">
+      <div className="main ">
         <Mindmap />
       </div>
     </div>

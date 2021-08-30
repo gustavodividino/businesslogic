@@ -4,6 +4,7 @@ import styles from "./styles.module.scss";
 import { useAppContext } from "../../context/MindmapContext";
 import { api } from "../../services/api";
 
+import { FormatNumber } from '../../utils/FormatNumber'
 
 export function Output() {
   const { ambiente, systemOutput, portalOutput, mindmap, addBreadcrumb } = useAppContext();
@@ -73,7 +74,7 @@ export function Output() {
               </tr>
               <tr>
                 <th>Script</th>
-                <td>{row.script}</td>
+                <td><a target="_blank" href={row.script}>Abrir Script</a></td>
               </tr>
               <tr>
                 <th>Status</th>
@@ -81,7 +82,7 @@ export function Output() {
               </tr>
               <tr>
                 <th>IRPT CDRs/Dia</th>
-                <td>~{row.cdrs}</td>
+                <td><FormatNumber format="0.00a" >{row.cdrs}</FormatNumber></td>
               </tr>
             </tbody>
           ))}
@@ -114,7 +115,7 @@ export function Output() {
               </tr>
               <tr>
                 <th>IRPT CDRs/Dia</th>
-                <td>~{row.cdrs}</td>
+                <td><FormatNumber format="0.00a" >{row.cdrs}</FormatNumber></td>
               </tr>              
               <tr>
                 <th>BusinessLogic</th>
