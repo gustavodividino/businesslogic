@@ -1,40 +1,26 @@
 version: "3"
 
 services:
-
-    db:
-        container_name: "mindmap-database"
-        image: ausencia_db
-        stdin_open: true
-        network_mode: host
-        restart: always
-        environment:
-            POSTGRES_DB: postgres
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-        ports:
-            - "5453:5452"
-      
-
     mindmap-backend:
         container_name: "mindmap-backend"
-        image: "dividino/mindmap-backend:latest"
-        stdin_open: true
-        network_mode: host
-        command:
+         image: "mindmap-backend:1.0.0"
+         stdin_open: true
+         network_mode: host
+         command:
             npm start
-        ports:
-            - "3334:3334"
+         ports:
+            - "4334:4334"
+     
 
     mindmap-frontend:
         container_name: "mindmap-frontend"
-        image: "dividino/mindmap-frontend:latest"
+        image: "mindmap-frontend:1.0.0"
         stdin_open: true
         network_mode: host
         tty: true
         command:
             npm start
         ports:
-            - "3001:3001"
+            - "4000:4000"
         depends_on:
             - "mindmap-backend"
